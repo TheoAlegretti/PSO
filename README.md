@@ -15,19 +15,7 @@ J'ai réalisé cette application sur `Dash`. Le but étant de construire un grap
 Pour le lancement de l'application, il vous faudra avoir ces packages installés sur votre ordinateur ou serveur : 
 
 ```python
-import random 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import dash
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output
-import plotly.express as px
-import math as mt 
-import plotly.io as pio
+pip install -r requirements.txt
 ```
 
 Il vous suffit de lancer depuis le terminal de votre ordinateur le script `app.py` et de récupérer l'adresse donnnée par `Dash` (ex :http://127.0.0.1:8050/). Il se peut que l'ouverture abusive du serveur bloque son accès : pas de panique, il vous suffit de _kill_ vos scripts python lancés et de fermer la fenetre de votre navigateur avec le serveur bloqué. Pour kill vos scripts python sur mac ou linux (bash) c'est `pkill -p python`. Pour `Windows`, vous pouvez faire `CTRL+Z` ou `quit()`. 
