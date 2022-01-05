@@ -23,7 +23,7 @@ import plotly.express as px
 import math as mt 
 import plotly.io as pio
 
-Il vous suffit de lancer depuis le terminal de votre ordinateur le script app.py et de récupérer l'adresse donnnée par Dash (ex :http://127.0.0.1:8050/). 
+Il vous suffit de lancer depuis le terminal de votre ordinateur le script app.py et de récupérer l'adresse donnnée par Dash (ex :http://127.0.0.1:8050/). Il se peut que l'ouverture abusive du serveur bloque son accès : pas de panique, il vous suffit de kill vos scripts python lancés et de fermer la fenetre de votre navigateur avec le serveur bloqué. Pour kill vos scripts python sur mac ou linux (bash) c'est pkill -p python. Pour windows, vous pouvez faire CTRL+Z ou quit(). 
 
 Si vous rencontrez un soucis dans le lancement ou si vous souhaitez discuter du projet, je vous laisse mon mail ci dessous : 
 
