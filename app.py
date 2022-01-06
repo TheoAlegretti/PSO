@@ -332,7 +332,7 @@ app.layout = html.Div([
     # third row => Les résultats 
     html.Div(children=[
         html.H3(html.A(
-                'Résultat de cette simulation',
+                'Résultat de cette simulation :',
                 style={
                     'text-decoration': 'none',
                     'color': 'inherit',
