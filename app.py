@@ -151,7 +151,7 @@ def pso(fct,parts,vit,c1,c2) :
                 #Le second terme est le niveau d'indépendance de l'oiseau (c1) =>  l'oiseau à une "mémoire" et se souviens de toutes ses postions et va aller vers sa valeur la plus basse ou haute 
                 #Le troisième terme est le niveau de dépendance de l'oiseau (c2) => Son esprit collaboratif au sein des autres oiseaux, il ira vers le gbest plus rapidement si c2 est élévé 
                 # c1 et c2 sont comme des vecteurs de directions et W est l'inertie c'est à dire la vitesse / distance parcouru en cette direction 
-                inspeed[nbv,r2] = W*inspeed[nbv][r2] + c1*random.random()*(inx[nbv][locc]-inx[nbv][r2])+ c2*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) 
+                inspeed[nbv,r2] = W*inspeed[nbv][r2] + c1*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) +c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
                 
                 #Ici, on impose les contraintes aux oiseaux, s'ils sortent de la fonctions ils sont automatiquement ramenés dans la fonction et son ensemble
                 if inx[nbv,r2]+ inspeed[nbv,r2] <= minx or inx[nbv,r2]+ inspeed[nbv,r2] >= maxx : 
