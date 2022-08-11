@@ -1,3 +1,5 @@
+
+#packages 
 import random 
 import pandas as pd
 import numpy as np
@@ -13,30 +15,29 @@ import math as mt
 import plotly.io as pio
 
 
-fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
-        ,'COBB':'solution analytique donne x = 15 , y = 15 avec z = 45',
-        'Schw':'solution analytique donne x = y = 420 avec z = 0',
-        'Ratr':'solution analytique donne x = y = 0 avec z = 0',
-        'Rosb':'solution analytique donne x = y = 1 avec z = 0',
-        'Eas':'solution analytique donne x = y = 3.1415 avec z = -1'}
 
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
+    #Les paramètres que l'on fait bouger avec l'application => PARAMETRISATION 
     #c1 = 0 #liberté 
     fctname = fct #la fonction update
     #c2 = 0.575 #dépendance
-    #wmax = 0.411 optimisé 
-    #wmin = 0.23 optimisé 
-    #parts = 30
+    #wmax = 0.411 optimisé => Permet le calcul de la vitesse 
+    #wmin = 0.23 optimisé  => Permet le calcul de la vitesse 
+    #parts = 30 
     #wmax = 0.411
     #wmin = 0.23
+    #Ici j'ai appelé qu'un paramètre vit qui me permet de construire la vitesse avec une décomposition simple (+ pratique)
     wmax = vit + vit/2
     wmin = vit - vit/2
+    #J'ai fixé le nombre d'itération à 50 arbitrairement mais on peut l'augmenter ou le descendre (c'est le nombre de déplacement maximum des oiseaux)
     maxite = 50 #peut être modifier 
+    #Je vais fixé les ensembles de définitions de chaqu'une des fonctions, cela va permettre de fixé les graphiques dans un premier temps 
+    # Mais aussi de renvoyé les oiseaux sur l'ensemble défini s'ils en sortent 
     if fct == 'COBB': 
         minx = 0
-        maxx = 15
+        maxx = 15 #Voir le PDF pso.pdf pour l'explication mais on peut couper la contrainte de budget d'un agent comme un ensemble de définition d'une fonction
     elif fct == 'Schw': 
         minx = -500
         maxx = 500
@@ -52,36 +53,41 @@ def pso(fct,parts,vit,c1,c2) :
     else : 
         minx = -100
         maxx = 100
+    #Ces valeurs serviront pour l'initiation des oiseaux, on leur définira une valeur aléatoire en -1 et 1 pour leur 1 er vol (1 er itération)
     minvit = -1
     maxvit = 1
+    #on travail sur des fonctions à 2 variables mais il est possible d'augmenter le nombre de variable 
     nbvar = 2
     #nbsimulation = 1
     allgb = {}
     allgbp = {}
-    #Simul_iteb = np.zeros(shape=(nbsimulation,1))
-    #Simul_gbest = np.zeros(shape=(nbsimulation,1))
-    #Simul_xbest = np.zeros(shape=(nbsimulation,nbvar))
-    #Première itération d'initiation # 
-    #for simulation in range(0,nbsimulation,1):
+    #Simul_iteb = np.zeros(shape=(nbsimulation,1)) => pour le machine learning (en cours)
+    #Simul_gbest = np.zeros(shape=(nbsimulation,1))=> pour le machine learning (en cours)
+    #Simul_xbest = np.zeros(shape=(nbsimulation,nbvar))=> pour le machine learning (en cours)
+    #####################################################################################################################################
+    #Première itération d'initiation #  
+    #for simulation in range(0,nbsimulation,1): => Machine learning 
     inx = np.random.uniform(minx,maxx,size=(nbvar, parts)) # on construit nos positions intiales avec un pseudo aléatoire 
     inspeed = np.random.uniform(minvit,maxvit, size=(nbvar, parts)) # Ainsi que nos premières vitesses 
-    dfx = pd.DataFrame(inx.T)
+    dfx = pd.DataFrame(inx.T) #on stock nos résultats dans des data frame 
     dfv = pd.DataFrame(inspeed.T)
+    #Ici, on calcule les résultats de nos oiseau sur les fonctions choisis 
     if fct == 'COBB': 
-        dfx['F'] = 3*((dfx[0])**(1/4))*((dfx[1])**(3/4))
+        dfx['F'] = 3*((dfx[0])**(1/4))*((dfx[1])**(3/4)) #Fonction Cobb-douglas avec une contrainte (probleme de maximisation d'utilité sous contrainte de budget)
     elif fct == 'Schw': 
-        dfx['F'] = 418.9829*2 - dfx[0]*np.sin(abs(dfx[0])**0.5) - dfx[1]*np.sin(abs(dfx[1])**0.5)
+        dfx['F'] = 418.9829*2 - dfx[0]*np.sin(abs(dfx[0])**0.5) - dfx[1]*np.sin(abs(dfx[1])**0.5) # Fonction Schwefel 
     elif fct == 'Ratr': 
-        dfx['F'] = 10*2 + (dfx[0]**2-10*np.cos(2*mt.pi*dfx[0])) + (dfx[1]**2-10*np.cos(2*mt.pi*dfx[1]))
+        dfx['F'] = 10*2 + (dfx[0]**2-10*np.cos(2*mt.pi*dfx[0])) + (dfx[1]**2-10*np.cos(2*mt.pi*dfx[1])) # Fonction Rastrigin 
     elif fct == 'Rosb': 
-        dfx['F'] =100*((dfx[1]-dfx[0]**2)**2) + (dfx[0]- 1)**2
+        dfx['F'] =100*((dfx[1]-dfx[0]**2)**2) + (dfx[0]- 1)**2 # Fonction Rosenbrock
     elif fct =='Simp' :
-        dfx['F'] = dfx[1]**2 + dfx[0]**2 + 2 
+        dfx['F'] = dfx[1]**2 + dfx[0]**2 + 2 # Fonction additive simple 
     else : 
-        dfx['F'] =  -np.cos(dfx[0])*np.cos(dfx[1])*np.exp(-(dfx[0]-mt.pi)**2-(dfx[1]-mt.pi)**2)
+        dfx['F'] =  -np.cos(dfx[0])*np.cos(dfx[1])*np.exp(-(dfx[0]-mt.pi)**2-(dfx[1]-mt.pi)**2)# Fonction Easom
     ValueF1 = np.array(dfx['F'])
-    #fig = go.Figure(px.scatter_3d(dfx,x=0,y=1,z='F',title="Initial repartition of our birds")) 
-    #Surface : fonction representation
+    #####################################################################################################################################
+    #Graphiques
+    #Surface : fonction representation => Pour représenter les fonctions sur un graphique 3 d => linspace permet de contruire des surfaces 
     x1 = np.linspace(minx, maxx, 50)
     x2 = np.linspace(minx, maxx, 50)
     v_x1, v_x2 = np.meshgrid(x1, x2)
@@ -97,67 +103,56 @@ def pso(fct,parts,vit,c1,c2) :
         z1 = v_x2**2 + v_x1**2 + 2 
     else : 
         z1 = -np.cos(v_x1)*np.cos(v_x2)*np.exp(-(v_x1-mt.pi)**2-(v_x2-mt.pi)**2)
-    #z1 = 418.9829*nbvar - x1*np.sin(abs(v_x1)**0.5) - x2*np.sin(abs(v_x2)**0.5)
     Xite = dict([(0,inx.tolist())])
     Yite = dict([(0,ValueF1.tolist())])
     Vite = dict([(0,inspeed.tolist())])
-    #fig = go.Figure(go.Surface(z=z1))
-    #fig.show()
-    #fig = go.Figure(px.scatter_3d(dfx,x=0,y=1,z='F',title="Initial repartition of our birds"))
-    #fig.show()
-    #fig = go.Figure(go.Scatter3d(x=np.array(dfx[0]),y=np.array(dfx[1]),z=np.array(dfx['F']),mode='markers'))
-    #work ok 
     fig = make_subplots(rows=1, cols=2,
                         specs=[[{'is_3d': True}, {'is_3d': True}]],
                         subplot_titles=['The function representation', 'our birds start their fly'],
                         )
-    fig.add_trace(go.Surface(z=z1),1,1)
-    fig.add_trace(go.Scatter3d(x=np.array(dfx[0]),y=np.array(dfx[1]),z=np.array(dfx['F']),mode='markers'),1,2)
-    #fig.add_trace(px.scatter(x=np.array(dfv[0]),y=np.array(dfv[1])),2,1)
-    #fig = go.Figure(go.Surface(z=z1))
-    #fig.show()
-    #fig = go.Figure(px.scatter_3d(dfx,x=0,y=1,z='F',title="Initial repartition of our birds"))
-    #fig.show()
-    #fig.add_scatter3d(dfx,x=0,y=1,z='F',title="Initial repartition of our birds")
-    #fig.show()
-    #fonction(inx[RVin,0]**2 + inx[RVin,1]**4 + 2)
+    fig.add_trace(go.Surface(z=z1),1,1) #La représentation de notre fonction 
+    fig.add_trace(go.Scatter3d(x=np.array(dfx[0]),y=np.array(dfx[1]),z=np.array(dfx['F']),mode='markers'),1,2) #La répartion de nos oiseaux à l'itération 0
+    #fig.show => permet de faire une première visualisation 
+    #####################################################################################################################################
+    #Ici, on va définir l'oiseau le plus proche de la solution (avec la valeur la plus faible dans la fonction pour les minimisation et la plus forte pour les maximisations)
+    # Gbest est sa valeur dans la fonction et locc le numéro de l'oiseau 
     if fct == 'COBB' : 
         gbest = max(ValueF1)
         locc = np.argmax(ValueF1)
     else : 
         gbest = min(ValueF1)
         locc = np.argmin(ValueF1)
+    #Inertie => vitesse en ligne droite initiale 
     W = wmax - ((wmax-wmin)/maxite)
+    #On stock les Gbest pour les résultats de la simulation 
     allgb[0] = gbest
     allgbp[0] = locc
+    #En enregistre nos positions initiales et leurs valeurs sur la fonction dans des variables qui vont évoluer dans les boucles 
     Xbest = inx
     ValueF = ValueF1
     #on crée la boucle avec le nb d'itérations: 
-    for ite in range(1,maxite,1):
-        for r2 in range(0,parts,1):
-            for nbv in range(0,nbvar,1): 
+    for ite in range(1,maxite,1): #pour l'ensemble du vol 
+        for r2 in range(0,parts,1): #pour chaque particules 
+            for nbv in range(0,nbvar,1): #pour leurs "2 pattes" => x1 et x2  
                 if fct == 'COBB': 
                     Xbest[nbv,r2] = max(Xbest[nbv,r2],inx[nbv,r2])
-                elif fct == 'Schw': 
-                    Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
-                elif fct == 'Ratr': 
-                    Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
-                elif fct == 'Rosb': 
-                    Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
-                elif fct == 'Simp' : 
-                    Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
                 else : 
                     Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
-                #Xbest[nbv,r2] = min(Xbest[nbv,r2],inx[nbv,r2])
-                #inspeed[nbv,r2] = W*inspeed[nbv][r2] + c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
+                #Voila la fonction de vitesse de nos oiseaux => le premier terme est la vitesse (vit) <=> l'évolution de x1 ou x2 
+                #Le second terme est le niveau d'indépendance de l'oiseau (c1) =>  l'oiseau à une "mémoire" et se souviens de toutes ses postions et va aller vers sa valeur la plus basse ou haute 
+                #Le troisième terme est le niveau de dépendance de l'oiseau (c2) => Son esprit collaboratif au sein des autres oiseaux, il ira vers le gbest plus rapidement si c2 est élévé 
+                # c1 et c2 sont comme des vecteurs de directions et W est l'inertie c'est à dire la vitesse / distance parcouru en cette direction 
                 inspeed[nbv,r2] = W*inspeed[nbv][r2] + c1*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) + c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
-                #inx[nbv,r2] = inx[nbv,r2] + inspeed[nbv,r2]
+                
+                #Ici, on impose les contraintes aux oiseaux, s'ils sortent de la fonctions ils sont automatiquement ramenés dans la fonction et son ensemble
                 if inx[nbv,r2]+ inspeed[nbv,r2] <= minx or inx[nbv,r2]+ inspeed[nbv,r2] >= maxx : 
                     inx[nbv,r2] = random.uniform(maxx,minx)
                 else : 
                     inx[nbv,r2] = inx[nbv,r2] + inspeed[nbv,r2]
+        #Xite et Vite sont des json/dictionnaire qui vont stocker tous les valeurs des positions et des valeurs à chaque itération => permet de faire les graphiques interactifs
         Xite[ite] = inx.tolist()
         Vite[ite] = inspeed.tolist()
+        # On calcule les valeurs des fonctions à chaque itération 
         for r3 in range(0,parts,1):
             if fct == 'COBB': 
                 ValueF[r3] = 3*((inx[0,r3])**(1/4))*((inx[1,r3])**(3/4))
@@ -171,9 +166,10 @@ def pso(fct,parts,vit,c1,c2) :
                 ValueF[r3] = inx[1,r3]**2 + inx[0,r3]**2 + 2 
             else : 
                 ValueF[r3] = -np.cos(inx[0,r3])*np.cos(inx[1,r3])*np.exp(-(inx[0,r3]-mt.pi)**2-(inx[1,r3]-mt.pi)**2)
-            #ValueF[r3] = 418.9829*nbvar - inx[0,r3]*np.sin(abs(inx[0,r3])**0.5) - inx[1,r3]*np.sin(abs(inx[1,r3])**0.5)
         Yite[ite] = ValueF.tolist()
+        #On rédéfini l'inertie (elle est décroissante au cours du temps => l'oiseau s'épuise)
         W = wmax - ((wmax-wmin)/maxite)*ite
+        #On redéfini les gbest à chaque itération 
         if min(Yite[ite]) < gbest : 
             if fct == 'Schw': 
                 gbest = min(Yite[ite])
@@ -207,18 +203,29 @@ def pso(fct,parts,vit,c1,c2) :
     df['Yite'] = Yite
     df['allgb'] = allgb
     df['allgbp'] = allgbp
+    #J'ai tous mis dans un dictionnaire géant => + rapide en boucle pour l'interactibilité des graphiques 
  
-#TEST 
+#TEST avec la première fonction : permet de donner un graphique initial au lancement de l'application 
 
-pso('Simp',20,0.3,0,0.5)
+pso('Simp',20,0.3,0.1,0.5)
+
+# Résultats théoriques des différentes fonctions 
+fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
+        ,'COBB':'solution analytique donne x = 15 , y = 15 avec z = 45',
+        'Schw':'solution analytique donne x = y = 420 avec z = 0',
+        'Ratr':'solution analytique donne x = y = 0 avec z = 0',
+        'Rosb':'solution analytique donne x = y = 1 avec z = 0',
+        'Eas':'solution analytique donne x = y = 3.1415 avec z = -1'}
+
+
+#On contruit l'application 
+
 
 app = dash.Dash(__name__)
 
-
-
+#La mise en page de l'application (html)
 
 app.layout = html.Div([
-
     # first row
     html.Div(children=[
         html.H1(html.A(
@@ -232,9 +239,19 @@ app.layout = html.Div([
         ,html.Br(), 
         dcc.Markdown('''
         Cette application interactive permet une visualisation du [PSO](https://www.linkedin.com/feed/update/urn:li:activity:6762648696573186050/) sur plusieurs fonctions qui semble complexe à résoudre analytiquement ou avec une multitude d'extrema locaux (on trouvera leur expression en format latex dans le pdf de l'hyperlien). 
-        Vous pourrez ainsi jouer avec les paramètres de l'algorithme afin de comprendre ce comportement ontologique aussi bien dans les mathématiques que dans la nature. Vous pouvez retrouver un devoir de recherche écrit sur la théorie et l'optimisation de cette algorithme. Pour faire simple, on admet un mouvement d'indépendance qui est la liberté de l'oiseau (c1) et un mouvement de dépendance (c2) qui force l'oiseau à aller vers le "gbest", la meilleure solution du problème à l'itération t. Les oiseaux vont parcourir de manière plus intelligentes que la descente de gradien en communiquant entre eux. Il est possible d'améliorer les performances du modèle avec un système de machine learning : "Zoom Effect" : c'est une boucle qui contraint l'ensemble de définition de la fonction et qui compare les résultats entre chaque ensembles. La fonction Rastrigin semble capricieuse avec nos paramètres de bases optimisés : à vous de trouver la bonne paramétrisation pour retrouver la solution théorique !'''),html.Br(),html.Br()
+        
+        Vous pourrez ainsi jouer avec les paramètres de l'algorithme afin de comprendre ce comportement ontologique aussi bien dans les mathématiques que dans la nature. Vous pouvez retrouver un devoir de recherche écrit sur la théorie et l'optimisation de cette algorithme.
+        
+        Pour faire simple, on admet un mouvement d'indépendance qui est la liberté de l'oiseau (c1) et un mouvement de dépendance (c2) qui force l'oiseau à aller vers le "gbest", la meilleure solution du problème à l'itération t.
+        
+        
+        Les oiseaux vont parcourir de manière plus intelligentes que la descente de gradien en communiquant entre eux. Il est possible d'améliorer les performances du modèle avec un système de machine learning : "Zoom Effect" : c'est une boucle qui contraint l'ensemble de définition de la fonction et qui compare les résultats entre chaque ensembles.
+        La fonction Rastrigin semble capricieuse avec nos paramètres de bases optimisés : à vous de trouver la bonne paramétrisation pour retrouver la solution théorique !
+        
+        PS : Il faut bouger le slider des intérations pour relancer les graphiques (non les résultats) lorsque vous modifier les paramètres. 
+        Chaque simulation est aléatoire (pseudo-aléatoire*), il est donc normale de ne pas retrouver les mêmes résultats avec les mêmes paramètres, chaque simulation est unique. L'implémentation du système de machine learning et des simulations de monte-carlos permet de résoudre ce problème.'''),html.Br(),html.Br()
     ], className='row',),
-        # first column of second
+        # first column of second => Les sliders (paramétrisation)
         html.Div(children=[
             html.Div(children=[
                 html.H3(html.A("Paramétrisation : ")), 
@@ -271,7 +288,7 @@ app.layout = html.Div([
                     min=0,
                     max=2,
                     step=0.1,
-                    value =0,
+                    value =0.1,
                 ),   html.Br(),
                 html.P("Degré de dépendance de l'oiseau (c2) : "),
                 dcc.Slider(
@@ -283,7 +300,7 @@ app.layout = html.Div([
                 )
                     ], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0vw', 'margin-top': '0vw','width': '30%'}),
 
-        # second column of second row
+        # second column of second row => les fonctions et les graphiques 
                 html.Div(children=[
                     html.Label('Fonction disponible : '),
                 dcc.Dropdown(id = 'crossfilter-xaxis-column', 
@@ -303,7 +320,7 @@ app.layout = html.Div([
                 ], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0vw', 'margin-top': '0vw','width': '70%'}),
                     ], className='row'),
 
-    # third row
+    # third row => Les résultats 
     html.Div(children=[
         html.H3(html.A(
                 'Résultat de cette simulation',
@@ -329,10 +346,11 @@ app.layout = html.Div([
     ],className='row')
 ])
 
+#Les fonctions de réponses qui vont faire l'interactivité entre les graphiques et les sliders (paramètres)
 
 
-
-
+#1er update sur le pso => on relance d'algorithme pso si on change la fonction ou les paramètres hors itération et renvoie les résultats de la simulation
+# <=> On relance une simulation 
 
 @app.callback(Output('fction','children'),[Input("crossfilter-xaxis-column","value"),Input('crossfilter-parts','value'),Input('crossfilter-vit','value'),Input('crossfilter-c1','value'),Input('crossfilter-c2','value')])
 
@@ -348,11 +366,15 @@ def update_pso(xaxis_column_name,parts,vit,c1,c2):
         xs = [Xite[loc][0][df['allgbp'][loc]],Xite[loc][1][df['allgbp'][loc]]]
     return f"Cette simulation nous donne comme solution : {bestsol}   , à l'itération : {loc} , avec les valeurs [x1,x2] : {xs}. "
 
+
+#Renvoie les solutions théoriques de la fonction selon la fonction choisi 
+
 @app.callback(Output('fctionsol','children'),[Input("crossfilter-xaxis-column","value")])
 
 def update_solfct(xaxis_column_name): 
     return f'Avec cette fonction , on trouve en théorie : {fctsol[xaxis_column_name]}'
     
+#Actualisation des graphiques selon l'itération et la fonction 
 
 @app.callback(Output("scatter-plot", "figure"),[Input("crossfilter-ite",component_property= "value"),Input("crossfilter-xaxis-column","value")])
 
@@ -399,9 +421,7 @@ def graphic(ite,xaxis_column_name):
                         shared_xaxes=True)
     fig.add_trace(go.Surface(z=z1),1,1)
     fig.add_trace(go.Scatter3d(x=np.array(df['Xite'][value][0]),y=np.array(df['Xite'][value][1]),z=np.array(df['Yite'][value]),mode='markers'),1,2)
-    #fig.update_xaxes(range=[minx, maxx],autorange='False', row=1, col=2)
-    #fig.update_yaxes(range=[minx, maxx],autorange='False', row=1, col=2)
-    #fig.update_layout(height=500)
+    #Permet de figer les ranges des graphiques 3 D 
     fig.update_layout(
     xaxis2={'range': [minx, maxx], 'fixedrange': True, 'rangemode': 'tozero', 'tickmode': "linear", 'tick0': minx,'automargin': False},
     yaxis2={'range': [minx, maxx], 'fixedrange': True, 'rangemode': 'tozero', 'tickmode': "linear", 'tick0': maxx, 'automargin': False},
@@ -417,15 +437,13 @@ def graphic(ite,xaxis_column_name):
         },'annotations': [{'x' : np.array(df['Xite'][value][0][locc]),'y' : np.array(df['Xite'][value][1][locc]),'z':np.array(df['Yite'][value][locc]),'text':"Gbest"}]},
     autosize=False,
     height=500)
-    #fig.update_xaxes(range=[minx, maxx],autorange='False', row=1, col=2)
-    #fig.update_yaxes(range=[minx, maxx],autorange='False', row=1, col=2)
-    #fig.show()
     return fig
 
-
+#On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(debug=True)
-    
+    app.run_server(debug=True,host="127.0.0.1")
+
+#Pour clean les scripts python bloquant 
 #ps -ef | grep python
 #pkill -9 python
