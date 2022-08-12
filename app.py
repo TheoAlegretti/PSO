@@ -64,16 +64,11 @@ def pso(fct,parts,vit,c1,c2) :
     #Simul_iteb = np.zeros(shape=(nbsimulation,1)) => pour le machine learning (en cours)
     #Simul_gbest = np.zeros(shape=(nbsimulation,1))=> pour le machine learning (en cours)
     #Simul_xbest = np.zeros(shape=(nbsimulation,nbvar))=> pour le machine learning (en cours)
-<<<<<<< HEAD
-    #####################################################################################################################################
-    #Première itération d'initiation #  
-=======
     
     #####################################################################################################################################
     
     #Première itération d'initiation #  
     
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
     #for simulation in range(0,nbsimulation,1): => Machine learning 
     inx = np.random.uniform(minx,maxx,size=(nbvar, parts)) # on construit nos positions intiales avec un pseudo aléatoire 
     inspeed = np.random.uniform(minvit,maxvit, size=(nbvar, parts)) # Ainsi que nos premières vitesses 
@@ -93,13 +88,9 @@ def pso(fct,parts,vit,c1,c2) :
     else : 
         dfx['F'] =  -np.cos(dfx[0])*np.cos(dfx[1])*np.exp(-(dfx[0]-mt.pi)**2-(dfx[1]-mt.pi)**2)# Fonction Easom
     ValueF1 = np.array(dfx['F'])
-<<<<<<< HEAD
-    #####################################################################################################################################
-=======
     
     #####################################################################################################################################
     
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
     #Graphiques
     #Surface : fonction representation => Pour représenter les fonctions sur un graphique 3 d => linspace permet de contruire des surfaces 
     x1 = np.linspace(minx, maxx, 50)
@@ -127,17 +118,11 @@ def pso(fct,parts,vit,c1,c2) :
     fig.add_trace(go.Surface(z=z1),1,1) #La représentation de notre fonction 
     fig.add_trace(go.Scatter3d(x=np.array(dfx[0]),y=np.array(dfx[1]),z=np.array(dfx['F']),mode='markers'),1,2) #La répartion de nos oiseaux à l'itération 0
     #fig.show => permet de faire une première visualisation 
-<<<<<<< HEAD
-    #####################################################################################################################################
-    #Ici, on va définir l'oiseau le plus proche de la solution (avec la valeur la plus faible dans la fonction pour les minimisation et la plus forte pour les maximisations)
-    # Gbest est sa valeur dans la fonction et locc le numéro de l'oiseau 
-=======
     
     #####################################################################################################################################
     #Ici, on va définir l'oiseau le plus proche de la solution (avec la valeur la plus faible dans la fonction pour les minimisation et la plus forte pour les maximisations)
     # Gbest est sa valeur dans la fonction et locc le numéro de l'oiseau 
     
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
     if fct == 'COBB' : 
         gbest = max(ValueF1)
         locc = np.argmax(ValueF1)
@@ -154,10 +139,7 @@ def pso(fct,parts,vit,c1,c2) :
     ValueF = ValueF1
     
     #on crée la boucle avec le nb d'itérations: 
-<<<<<<< HEAD
-=======
     
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
     for ite in range(1,maxite,1): #pour l'ensemble du vol 
         for r2 in range(0,parts,1): #pour chaque particules 
             for nbv in range(0,nbvar,1): #pour leurs "2 pattes" => x1 et x2  
@@ -169,11 +151,7 @@ def pso(fct,parts,vit,c1,c2) :
                 #Le second terme est le niveau d'indépendance de l'oiseau (c1) =>  l'oiseau à une "mémoire" et se souviens de toutes ses postions et va aller vers sa valeur la plus basse ou haute 
                 #Le troisième terme est le niveau de dépendance de l'oiseau (c2) => Son esprit collaboratif au sein des autres oiseaux, il ira vers le gbest plus rapidement si c2 est élévé 
                 # c1 et c2 sont comme des vecteurs de directions et W est l'inertie c'est à dire la vitesse / distance parcouru en cette direction 
-<<<<<<< HEAD
-                inspeed[nbv,r2] = W*inspeed[nbv][r2] + c1*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) + c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
-=======
                 inspeed[nbv,r2] = W*inspeed[nbv][r2] + c1*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) +c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
                 
                 #Ici, on impose les contraintes aux oiseaux, s'ils sortent de la fonctions ils sont automatiquement ramenés dans la fonction et son ensemble
                 if inx[nbv,r2]+ inspeed[nbv,r2] <= minx or inx[nbv,r2]+ inspeed[nbv,r2] >= maxx : 
