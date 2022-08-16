@@ -231,15 +231,9 @@ fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
 
 
 app = dash.Dash(__name__)
-<<<<<<< HEAD
 
 #La mise en page de l'application (html)
 
-=======
-
-#La mise en page de l'application (html)
-
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
 app.layout = html.Div([
     # first row
     html.Div(children=[
@@ -457,11 +451,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-<<<<<<< HEAD
-    app.run_server(debug=True,host="127.0.0.1")
-=======
     app.run_server(debug=True)
->>>>>>> 26ffc691cdafdb6998a204ea135452ef4e466f94
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
