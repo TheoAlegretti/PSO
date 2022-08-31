@@ -3,7 +3,7 @@
 import random 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash
@@ -451,7 +451,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(debug=True)
+    app.run_server(debug=True,host="127.0.0.1")
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
