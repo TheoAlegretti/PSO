@@ -211,6 +211,7 @@ from dash import html
 from dash.dependencies import Input, Output
 import plotly.express as px
 
+
 c1 = 0 
 c2 = 0.575
 wmax = 0.411
