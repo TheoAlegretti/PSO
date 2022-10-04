@@ -85,7 +85,7 @@ def pso_Monte_Carlo_normal_law(params,data,fct):
     iteration = {0:{"parts": particules,"val_fct" : value_fct, "gbest":gbest,"particule_best":particule_best}}
     for ite in range(0,params['ite'],1):
         for p in range(0,len(particules),1) : 
-            particules[p,0] = params['vit']*inspeed[r2,nbv] + params['c1']*random.random()*(particule_best[0]-inx[r2,nbv]) + params['c2']*random.random()*(inx[locc,nbv]-inx[r2,nbv])
-            particules[p,1] =  params['vit']*inspeed[r2,nbv] + params['c1']*random.random()*(particule_best[1]-inx[r2,nbv]) + params['c2']*random.random()*(inx[locc,nbv]-inx[r2,nbv])
+            particules[p,0] = params['vit']*speed[p,0] + params['c1']*random.random()*(particule_best[0]-particules[p,ite]) + params['c2']*random.random()*(particules[p,ite-1]-particules[p,ite])
+            particules[p,1] =  params['vit']*speed[p,0] + params['c1']*random.random()*(particule_best[1]-inx[r2,nbv]) + params['c2']*random.random()*(inx[locc,nbv]-inx[r2,nbv])
             value_fct[p,0] = fct(data,particules[p,0],particules[p,1])
 
