@@ -258,7 +258,7 @@ app.layout = html.Div([
         La fonction Rastrigin semble capricieuse avec nos paramètres de bases optimisés : à vous de trouver la bonne paramétrisation pour retrouver la solution théorique !
         
         PS : Il faut bouger le slider des intérations pour relancer les graphiques (non les résultats) lorsque vous modifier les paramètres. 
-        Chaque simulation est aléatoire (pseudo-aléatoire*), il est donc normale de ne pas retrouver les mêmes résultats avec les mêmes paramètres, chaque simulation est unique. L'implémentation du système de machine learning et des simulations de monte-carlos permet de résoudre ce problème.'''),html.Br(),html.Br()
+        Chaque simulation est aléatoire (pseudo-aléatoire*), il est donc normale de ne pas retrouver les mêmes résultats avec les mêmes paramètres, chaque simulation est unique. L'implémentation du système de machine learning et des simulations de Monte-carlo permet de résoudre ce problème.'''),html.Br(),html.Br()
     ], className='row',),
         # first column of second => Les sliders (paramétrisation)
         html.Div(children=[
