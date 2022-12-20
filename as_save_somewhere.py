@@ -9,10 +9,10 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 import math as mt 
-from flask import Flask
+# from flask import Flask
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
 dash_app = dash.Dash(__name__, server = app)
 
 def pso(fct,parts,vit,c1,c2) : 
