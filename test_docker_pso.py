@@ -2,7 +2,6 @@
 import random 
 import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash
@@ -12,10 +11,12 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import math as mt 
 import plotly.io as pio
+import flask
 
 
-
-
+app = flask.Flask(__name__)
+dash_app = dash.Dash(__name__, server = app)
+dash_app.config.suppress_calback_exceptions = True 
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
@@ -229,12 +230,9 @@ fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
 
 #On contruit l'application 
 
-
-app = dash.Dash(__name__)
-
 #La mise en page de l'application (html)
 
-app.layout = html.Div([
+dash_app.layout = html.Div([
     # first row
     html.Div(children=[
         html.H1(html.A(
@@ -451,7 +449,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(debug=True,host="127.0.0.1")
+    app.run(debug=True,host="0.0.0.0",port=80)
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
