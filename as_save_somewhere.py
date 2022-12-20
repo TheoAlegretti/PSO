@@ -1,6 +1,4 @@
 #packages 
-import random 
-import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -9,11 +7,9 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 import math as mt 
-# from flask import Flask
+import random 
+import pandas as pd 
 
-
-# app = Flask(__name__)
-dash_app = dash.Dash(__name__, server = app)
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
@@ -211,6 +207,7 @@ def pso(fct,parts,vit,c1,c2) :
     df['allgb'] = allgb
     df['allgbp'] = allgbp
     #J'ai tous mis dans un dictionnaire géant => + rapide en boucle pour l'interactibilité des graphiques 
+
  
 #TEST avec la première fonction : permet de donner un graphique initial au lancement de l'application 
 
@@ -227,9 +224,12 @@ fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
 
 #On contruit l'application 
 
+
+app = dash.Dash(__name__)
+
 #La mise en page de l'application (html)
 
-dash_app.layout = html.Div([
+app.layout = html.Div([
     # first row
     html.Div(children=[
         html.H1(html.A(
@@ -446,7 +446,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run(debug=True,host="0.0.0.0",port=80)
+    app.run_server(debug=True,host="127.0.0.1")
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
