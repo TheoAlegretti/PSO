@@ -1,20 +1,14 @@
 #packages 
-import random 
-import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-import plotly.express as px
 import math as mt 
-import plotly.io as pio
-
-
-
+import random 
+import pandas as pd 
 
 
 def pso(fct,parts,vit,c1,c2) : 
@@ -213,6 +207,7 @@ def pso(fct,parts,vit,c1,c2) :
     df['allgb'] = allgb
     df['allgbp'] = allgbp
     #J'ai tous mis dans un dictionnaire géant => + rapide en boucle pour l'interactibilité des graphiques 
+
  
 #TEST avec la première fonction : permet de donner un graphique initial au lancement de l'application 
 
