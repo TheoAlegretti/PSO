@@ -3,5 +3,4 @@ numpy
 plotly==5.5.0
 dash
 flask
-random 
-math
+gunicorn==19.9.0
