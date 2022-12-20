@@ -9,9 +9,13 @@ from dash.dependencies import Input, Output
 import math as mt 
 import random 
 import pandas as pd 
-from flask import Flask 
+import flask
 
-dash
+
+server = flask.Flask(__name__)
+app = dash.Dash(__name__)
+
+
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
@@ -225,9 +229,6 @@ fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
 
 
 #On contruit l'application 
-
-
-app = dash.Dash(__name__)
 
 #La mise en page de l'application (html)
 
@@ -448,7 +449,11 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(host="0.0.0.0", port=80, debug=True)
+    app.run(debug=True,host="127.0.0.1",port="8050")
+
+# if __name__ == '__main__':
+#     app.run_server(debug=True)
+    
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
