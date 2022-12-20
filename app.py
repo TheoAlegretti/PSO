@@ -9,7 +9,9 @@ from dash.dependencies import Input, Output
 import math as mt 
 import random 
 import pandas as pd 
+from flask import Flask 
 
+dash
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
@@ -446,7 +448,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(debug=True,host="127.0.0.1")
+    app.run_server(host="0.0.0.0", port=80, debug=True)
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
