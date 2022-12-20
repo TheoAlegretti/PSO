@@ -14,7 +14,6 @@ from flask import Flask
 
 app = Flask(__name__)
 dash_app = dash.Dash(__name__, server = app)
-dash_app.config.suppress_calback_exceptions = True 
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
@@ -447,7 +446,7 @@ def graphic(ite,xaxis_column_name):
 #On lance et hop ! 
 
 if __name__ == '__main__' : 
-    app.run_server(debug=True,host="0.0.0.0",port=80)
+    app.run(debug=True,host="0.0.0.0",port=80)
 
 #Pour clean les scripts python bloquant 
 #ps -ef | grep python
