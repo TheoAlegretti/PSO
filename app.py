@@ -9,13 +9,13 @@ from dash.dependencies import Input, Output
 import math as mt 
 import random 
 import pandas as pd 
-# import flask
+from flask import Flask
 
 
-# server = flask.Flask(__name__)
-app = dash.Dash(__name__)
+server = Flask(__name__)
+# app = dash.Dash(__name__)
 
-
+app = dash.Dash(server=server)
 
 def pso(fct,parts,vit,c1,c2) : 
     global Xite,Yite,gbest,inspeed,nbvar,maxx,minx,Vite,locc,allgb,fctname,allgbp,inx,ValueF,df,maxite
