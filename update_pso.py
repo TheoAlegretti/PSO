@@ -10,7 +10,7 @@ from functions_to_optimise import *
 
 
 params = {
-    "nb_part" : 10 , 
+    "nb_part" : 10, 
     "vit" : 0.3, 
     "c1" : 0.5, 
     "c2" : 0.5,
@@ -19,6 +19,7 @@ params = {
     "min_x" : 0, 
     "max_x" : 15, 
     "Dim" : 2, 
+    "min_max" : "max", 
     }
 
 
@@ -58,19 +59,63 @@ maxvit = 1
 
 
 birds  = {
-        "positions" : 
+            "simulation" : 
+                { 
+                0 : 
                     {
-                    0 : np.random.uniform(params['min_x'],params['max_x'],size=(params['Dim'],params['nb_part']))
-                    },
-        "vitesses" : 
-                    {
-                    0 : np.random.uniform(minvit,maxvit,size=(params['Dim'],params['nb_part']))
+                    "positions" : 
+                                {
+                                    0 : None
+                                },
+                    "vitesses" : 
+                                {
+                                    0 : None
+                                }
                     }
+                }
         }
 
-results = {
-    "output" : {0 : COBB_DOUGLAS(birds['positions'][0])}
-    }
+
+results  = {
+            "simulation" : 
+                { 
+                0 : 
+                    {
+                    "output" : 
+                                {
+                                    0 : None
+                                },
+                    "best_bird" : 
+                                {
+                                    0 : None
+                                }
+                    }
+                }
+        }
+
+
+
+
+def arg_min_max(array, min_max): 
+    """
+    This function will found the bird with the max or the min value of the function to optimise
+    It will return the index of the bird
+
+    Args:
+        array (np.array): The array where we will found the output of the function
+        min_max (str): Did we maximise or minimise the function ? 
+
+    Returns:
+        int : The index of the best bird 
+    """
+    if min_max == 'max' : 
+        return np.argmax(array)
+    elif  min_max == 'min' :
+        return np.argmax(array)
+    else : 
+        print('please, define if you want to maximise or minimise your function on the params dict')
+
+
 
 #####################################################################################################################################
 
@@ -107,21 +152,30 @@ results = {
 #Ici, on va définir l'oiseau le plus proche de la solution (avec la valeur la plus faible dans la fonction pour les minimisation et la plus forte pour les maximisations)
 # Gbest est sa valeur dans la fonction et locc le numéro de l'oiseau 
 
-if fct == 'COBB' : 
-    gbest = max(ValueF1)
-    locc = np.argmax(ValueF1)
-else : 
-    gbest = min(ValueF1)
-    locc = np.argmin(ValueF1)
-#Inertie => vitesse en ligne droite initiale 
-W = wmax - ((wmax-wmin)/maxite)
-#On stock les Gbest pour les résultats de la simulation 
-allgb[0] = gbest
-allgbp[0] = locc
-#En enregistre nos positions initiales et leurs valeurs sur la fonction dans des variables qui vont évoluer dans les boucles 
-Xbest = inx
-ValueF = ValueF1
+def actualisation_vitesse(iteration,simu) : 
+    global results, birds
+    W = wmax - ((wmax-wmin)/iteration)
+    for var in range(0,params['Dim']) :  
+        birds['simulation'][simu]['vitesses'][iteration][var] = W*birds['simulation'][simu]['vitesses'][iteration-1][var] + params['c1']*random.random()*(birds['simulation'][simu]['positions'][iteration-1][var][results['simulation'][simu]['best_bird'][iteration-1]]-birds['simulation'][simu]['positions'][iteration-1][var]) +params['c2']*random.random()*(birds['simulation'][simu]['positions'][iteration-1][var]-birds['simulation'][simu]['positions'][iteration-1][var])
 
+
+
+#Inertie => vitesse en ligne droite initiale 
+W = wmax - ((wmax-wmin)/params['max_ite'])
+
+for simu in range(0,params['nb_simulation_MC']):
+    birds['simulation'][simu]['positions'][0] = np.random.uniform(params['min_x'],params['max_x'],size=(params['Dim'],params['nb_part']))
+    birds['simulation'][simu]['vitesses'][0] = np.random.uniform(minvit,maxvit,size=(params['Dim'],params['nb_part']))
+    results['simulation'][simu]['output'][0] = COBB_DOUGLAS(birds['simulation'][simu]['positions'][0])
+    results['simulation'][simu]['best_bird'][0] = np.repeat(False,params['nb_part'])
+    results['simulation'][simu]['best_bird'][0][arg_min_max(results['simulation'][simu]['output'][0],params['min_max'])] = True
+    for iteration in range(1,params['max_ite']): 
+        birds['simulation'][simu]['vitesses'][iteration] = W*birds['simulation'][simu]['vitesses'][iteration-1] + params['c1']*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) +c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
+        birds['simulation'][simu]['positions'][iteration] = np.random.uniform(params['min_x'],params['max_x'],size=(params['Dim'],params['nb_part']))
+        results['simulation'][simu]['output'][iteration] = COBB_DOUGLAS(birds['simulation'][0]['positions'][0])
+        results['simulation'][simu]['best_bird'][iteration] = np.repeat(False,params['nb_part'])
+        results['simulation'][simu]['best_bird'][0][arg_min_max(results['simulation'][0]['output'][0],params['min_max'])] = True
+        
 #on crée la boucle avec le nb d'itérations: 
 
 for ite in range(1,maxite,1): #pour l'ensemble du vol 
