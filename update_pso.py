@@ -10,10 +10,10 @@ from functions_to_optimise import *
 
 
 params = {
-    "nb_part" : 10, 
-    "vit" : 0.3, 
-    "c1" : 0.5, 
-    "c2" : 0.5,
+    "nb_part" : 500, 
+    "vit" : 0.1, 
+    "c1" : 0.1, 
+    "c2" : 0.6,
     "max_ite" : 50, 
     "nb_simulation_MC" : 5 , 
     "min_x" : 0, 
@@ -153,15 +153,22 @@ def arg_min_max(array, min_max):
 # Gbest est sa valeur dans la fonction et locc le numéro de l'oiseau 
 
 def actualisation_vitesse(iteration,simu) : 
-    global results, birds
     W = wmax - ((wmax-wmin)/iteration)
+    birds['simulation'][simu]['vitesses'][iteration] = {}
     for var in range(0,params['Dim']) :  
         birds['simulation'][simu]['vitesses'][iteration][var] = W*birds['simulation'][simu]['vitesses'][iteration-1][var] + params['c1']*random.random()*(birds['simulation'][simu]['positions'][iteration-1][var][results['simulation'][simu]['best_bird'][iteration-1]]-birds['simulation'][simu]['positions'][iteration-1][var]) +params['c2']*random.random()*(birds['simulation'][simu]['positions'][iteration-1][var]-birds['simulation'][simu]['positions'][iteration-1][var])
+    return birds['simulation'][simu]['vitesses'][iteration]
 
+def actualisation_position(iteration,simu) : 
+    birds['simulation'][simu]['positions'][iteration] = {}
+    for var in range(0,params['Dim']) :  
+        birds['simulation'][simu]['positions'][iteration][var] = birds['simulation'][simu]['positions'][iteration-1][var] + birds['simulation'][simu]['vitesses'][iteration][var]
+    return birds['simulation'][simu]['positions'][iteration]
 
-
+    
 #Inertie => vitesse en ligne droite initiale 
 W = wmax - ((wmax-wmin)/params['max_ite'])
+
 
 for simu in range(0,params['nb_simulation_MC']):
     birds['simulation'][simu]['positions'][0] = np.random.uniform(params['min_x'],params['max_x'],size=(params['Dim'],params['nb_part']))
@@ -169,14 +176,23 @@ for simu in range(0,params['nb_simulation_MC']):
     results['simulation'][simu]['output'][0] = COBB_DOUGLAS(birds['simulation'][simu]['positions'][0])
     results['simulation'][simu]['best_bird'][0] = np.repeat(False,params['nb_part'])
     results['simulation'][simu]['best_bird'][0][arg_min_max(results['simulation'][simu]['output'][0],params['min_max'])] = True
+    birds['simulation'][simu+1] = {'positions' : {},'vitesses' : {}}
+    results['simulation'][simu+1] = {'output' : {},'best_bird' : {}}
+    print(f'Simulation n° {simu} done')
     for iteration in range(1,params['max_ite']): 
-        birds['simulation'][simu]['vitesses'][iteration] = W*birds['simulation'][simu]['vitesses'][iteration-1] + params['c1']*random.random()*(Xbest[nbv][r2]-inx[nbv][r2]) +c2*random.random()*(inx[nbv][locc]-inx[nbv][r2])
-        birds['simulation'][simu]['positions'][iteration] = np.random.uniform(params['min_x'],params['max_x'],size=(params['Dim'],params['nb_part']))
-        results['simulation'][simu]['output'][iteration] = COBB_DOUGLAS(birds['simulation'][0]['positions'][0])
+        birds['simulation'][simu]['vitesses'][iteration] = actualisation_vitesse(iteration,simu)
+        birds['simulation'][simu]['positions'][iteration] = actualisation_position(iteration,simu)
+        results['simulation'][simu]['output'][iteration] = COBB_DOUGLAS(birds['simulation'][simu]['positions'][iteration])
         results['simulation'][simu]['best_bird'][iteration] = np.repeat(False,params['nb_part'])
-        results['simulation'][simu]['best_bird'][0][arg_min_max(results['simulation'][0]['output'][0],params['min_max'])] = True
+        results['simulation'][simu]['best_bird'][iteration][arg_min_max(results['simulation'][simu]['output'][iteration],params['min_max'])] = True
         
 #on crée la boucle avec le nb d'itérations: 
+
+df_result = pd.DataFrame(results['simulation']).T
+Resultats_last_ite = df_result.apply(lambda row : max(row[params['max_ite']-1]))
+print(f'Le meilleur résultat est ')
+
+
 
 for ite in range(1,maxite,1): #pour l'ensemble du vol 
     for r2 in range(0,parts,1): #pour chaque particules 
