@@ -2,6 +2,7 @@
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly
 import dash
 from dash import dcc
 from dash import html
@@ -10,7 +11,6 @@ import math as mt
 import random 
 import pandas as pd 
 from flask import Flask
-
 
 server = Flask(__name__)
 # app = dash.Dash(__name__)
