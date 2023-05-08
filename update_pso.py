@@ -5,9 +5,12 @@ import math as mt
 import random 
 import pandas as pd 
 from functions_to_optimise import *
+import time
+from config_pso import config_pso
 
 
 def pso(fct,params) : 
+    begin = time.time()
     vit = params['vit']
     wmax = vit + vit/2
     wmin = vit - vit/2
@@ -121,6 +124,7 @@ def pso(fct,params) :
         for var in range(0,params['Dim']) :  
             birds['simulation'][simu]['positions'][iteration][var] = birds['simulation'][simu]['positions'][iteration-1][var] + birds['simulation'][simu]['vitesses'][iteration][var]
         return birds['simulation'][simu]['positions'][iteration]
+    
     def arg_min_max(array, min_max): 
         """
         This function will found the bird with the max or the min value of the function to optimise
@@ -163,24 +167,18 @@ def pso(fct,params) :
         best_of_info['opti'][simu] = results['simulation'][simu]['output'][params['max_ite']-1][results['simulation'][simu]['best_bird'][simu]]
         best_of_info['var'][simu] = np.var(results['simulation'][simu]['output'][params['max_ite']-1])
     best_of_info_df = pd.DataFrame(best_of_info)
-    print(f"La meilleure image obtenue est {np.round(best_of_info['opti'][arg_min_max(best_of_info['opti'],params['min_max'])],2)}")
-    print(f"Cette image a été obtenue à la simulation n°{arg_min_max(best_of_info['opti'],params['min_max'])} avec les inputs suivants : ")
+    result_ite = arg_min_max(best_of_info['opti'],params['min_max'])
+    oiseau_pos = arg_min_max(results['simulation'][simu]['output'][iteration],params['min_max'])
+    inputs = {}
+    for x_val in range(0,params['Dim']) :
+        inputs[f"x_{x_val}"] = np.round(birds['simulation'][result_ite]['positions'][params['max_ite']-1][x_val][oiseau_pos],2)
+    print(f"La meilleure image obtenue est {np.round(best_of_info['opti'][result_ite],2)}")
+    print(f"Cette image a été obtenue à la simulation n°{result_ite} avec l'oiseau n° {oiseau_pos} avec les inputs suivants : {inputs}")
+    print(f"PSO run in {np.round(time.time() - begin,2)}' s")
     return df_result, best_of_info_df ,df_birds
 
+config = config_pso()
 
 
-params = {
-    "nb_part" : 500, 
-    "vit" : 0.05, 
-    "c1" : 0.1, 
-    "c2" : 0.6,
-    "max_ite" : 500, 
-    "nb_simulation_MC" : 50 , 
-    "min_x" : -500, 
-    "max_x" : 500, 
-    "Dim" : 2, 
-    "min_max" : "min", 
-    }
+pso(config['function'],config)
 
-
-all_results,best_results,birds_information =  pso(Schwefel,params)

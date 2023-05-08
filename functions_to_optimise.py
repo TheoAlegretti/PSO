@@ -32,6 +32,21 @@ def Schwefel(input):
     return np.array(418.9829*2 - input[0]*np.sin(abs(input[0])**0.5) - input[1]*np.sin(abs(input[1])**0.5)) 
 
 
+def Ackley(input) : 
+    """
+    Here, we will take the function : Ackley(input) = -Aexp(-Bsqrt((1/n)*sum(xi^2))) - exp((1/n)sum(cos(Cxi))) + A + exp(1)
+    
+     xi ∈ [-32.768, 32.768]
+
+    Args:
+        input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
+        
+    Returns:
+        np.array : contains all the outputs of the function 
+    """
+    a = 1 
+    b = 100 
+    return np.array((a - input[0])**2 + b*(input[1] - input[0]**2)**2) 
 
 def Rastrigin(input):
     """
