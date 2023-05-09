@@ -10,6 +10,9 @@ def COBB_DOUGLAS(input):
 
     Here, we will take the function : COBB douglas f(input) = 3*((input[0])**(1/4))*((input[1])**(3/4))
     
+    -     minx = 0
+    -     maxx = 15 
+    
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
         
@@ -22,6 +25,10 @@ def COBB_DOUGLAS(input):
 def Schwefel(input):
     """
     Here, we will take the function : Schwefel f(input) = 418.9829*2 - input[0]*np.sin(abs(input[0])**0.5) - input[1]*np.sin(abs(input[1])**0.5)
+    
+    
+    -    minx = -500
+    -    maxx = 500
     
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
@@ -52,6 +59,9 @@ def Rastrigin(input):
     """
     Here, we will take the function : Rastrigin(input) = 10*2 + (input[0]**2-10*np.cos(2*mt.pi*input[0])) + (input[1]**2-10*np.cos(2*mt.pi*input[1]))
 
+    -    minx = -5
+    -    maxx = 5
+    
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
         
@@ -66,6 +76,10 @@ def Rosenbrock(input):
     """
     Here, we will take the function : Rosenbrock(input) = 100*((input[1]-input[0]**2)**2) + (input[0]- 1)**2 
 
+    -     minx = -10
+    
+    -     maxx = 10
+    
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
         
@@ -89,6 +103,23 @@ def Easom(input):
     """
     return np.array(-np.cos(input[0])*np.cos(input[1])*np.exp(-(input[0]-mt.pi)**2-(input[1]-mt.pi)**2)) 
 
+
+def Function_test_1(input):
+    """
+    Here, we will take the function : Additive(input) = -.4 + (x+15)/30. + (y+15)/40.+.5*np.sin(r)
+    
+    with x,y in [-15,15]
+
+    Args:
+        input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
+        
+    Returns:
+        np.array : contains all the outputs of the function 
+    """
+    x = input[0]
+    y = input[1]
+    r = np.sqrt(x**2 + y**2)
+    return -.4 + (x+15)/30. + (y+15)/40.+.5*np.sin(r)
 
 def Additive(input):
     """

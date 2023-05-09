@@ -8,6 +8,14 @@ from functions_to_optimise import *
 import time
 from config_pso import config_pso
 
+from numba import njit
+
+
+
+
+
+
+
 
 def pso(fct, params):
     begin = time.time()
@@ -31,7 +39,8 @@ def pso(fct, params):
         "opti": np.zeros(params["nb_simulation_MC"]),
         "var": np.zeros(params["nb_simulation_MC"]),
     }
-
+    
+    @njit
     def actualisation_vitesse(iteration: int, simu: int) -> dict:
         """
         Actualise la vitesse des particules dans l'optimisation par essaim de particules (PSO).
