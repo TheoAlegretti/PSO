@@ -17,7 +17,7 @@ from numba import njit
 
 
 
-def pso(fct, params):
+def pso_opti(fct, params):
     begin = time.time()
 
     vit = params["vit"]

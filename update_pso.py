@@ -32,6 +32,31 @@ def pso(fct, params):
         "var": np.zeros(params["nb_simulation_MC"]),
     }
 
+    
+    
+    def actualisation_position(iteration: int, simu: int) -> dict:
+        """
+        Actualise les positions des particules dans l'optimisation par essaim de particules (PSO).
+
+        Args:
+        - iteration (int): Le numéro de l'itération actuelle.
+        - simu (int): Le numéro de la simulation actuelle.
+
+        Returns:
+        - dict: Un dictionnaire contenant les nouvelles positions des particules pour l'itération actuelle.
+
+        Cette fonction met à jour les positions des particules dans l'essaim en utilisant les vitesses calculées à l'étape
+        précédente. Elle utilise les formules de mise à jour des positions dans l'algorithme PSO pour calculer la nouvelle
+        position de chaque particule en fonction de sa vitesse actuelle. Les nouvelles positions sont stockées dans la
+        variable birds['simulation'][simu]['positions'][iteration] et retournées à la fin de la fonction.
+        """
+        
+        birds['simulation'][simu]['positions'][iteration] = {}
+        for var in range(0,params['Dim']) :  
+            birds['simulation'][simu]['positions'][iteration][var] = birds['simulation'][simu]['positions'][iteration-1][var] + birds['simulation'][simu]['vitesses'][iteration][var]
+        return birds['simulation'][simu]['positions'][iteration]
+    
+    
     def actualisation_vitesse(iteration: int, simu: int) -> dict:
         """
         Actualise la vitesse des particules dans l'optimisation par essaim de particules (PSO).
