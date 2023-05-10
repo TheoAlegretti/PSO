@@ -1,9 +1,9 @@
-from opti_pso import *
+# from opti_pso import *
 from config_pso import config_pso
-from numpy import *
-from numpy.linalg import norm
-import time
-import numpy as np
+# from numpy import *
+# from numpy.linalg import norm
+# import time
+# import numpy as np
 from update_pso import pso
 
 # our PSO testing (iteration, particules, simulation) => Let's fixe it at
