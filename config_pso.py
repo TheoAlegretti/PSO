@@ -3,17 +3,17 @@ from functions_to_optimise import *
 def config_pso():
 
     params = {
-        "nb_part" : 500, 
+        "nb_part" : 2, 
         "vit" : 0.1, 
         "c1" : 0.2, 
         "c2" : 0.2,
-        "max_ite" : 5000, 
-        "nb_simulation_MC" : 20 , 
-        "min_x" : 0, 
-        "max_x" : 15, 
+        "max_ite" : 500, 
+        "nb_simulation_MC" : 5 , 
+        "min_x" : -100, 
+        "max_x" : 100, 
         "Dim" : 2, 
         "min_max" : "min", 
-        "function" : Function_test_1,
+        "function" : Easom,
         }
     
     return params

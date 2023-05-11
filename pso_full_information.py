@@ -135,7 +135,7 @@ def pso(fct, params):
         ] = True
         birds["simulation"][simu + 1] = {"positions": {}, "vitesses": {}}
         results["simulation"][simu + 1] = {"output": {}, "best_bird": {}}
-        print(f"Simulation n° {simu} done")
+        # print(f"Simulation n° {simu} done")
         for iteration in range(1, params["max_ite"]):
             birds["simulation"][simu]["vitesses"][iteration] = actualisation_vitesse(
                 iteration, simu
@@ -173,6 +173,8 @@ def pso(fct, params):
     oiseau_pos = arg_min_max(
         results["simulation"][simu]["output"][iteration], params["min_max"]
     )
+    
+    
     inputs = {}
     for x_val in range(0, params["Dim"]):
         inputs[f"x_{x_val}"] = np.round(
@@ -190,8 +192,10 @@ def pso(fct, params):
         f"Cette image a été obtenue à la simulation n°{result_ite} avec l'oiseau n° {oiseau_pos} avec les inputs suivants : {inputs}"
     )
     print(f"PSO run in {np.round(time.time() - begin,2)}' s")
+    
+    timer = np.round(time.time() - begin,2)
 
-    return df_result, best_of_info_df, df_birds
+    return df_result, best_of_info_df, df_birds , timer
 
 
 # config = config_pso()

@@ -6,12 +6,16 @@ def COBB_DOUGLAS(input):
     This function is a toy to test the pso with a simple function to create 
     
     The input is a numpy with all the inputs of the function : if the function 
-    go from R^3 to R, we will have a numpy on 3 dim to another output array with a unique value
+    go from R^2 to R, we will have a numpy on 3 dim to another output array with a unique value
 
     Here, we will take the function : COBB douglas f(input) = 3*((input[0])**(1/4))*((input[1])**(3/4))
     
-    -     minx = 0
-    -     maxx = 15 
+
+     
+    x_1,x_2 in [0, 15]
+    
+    SOLUTION : x_1 = x_2 = 15 with f*(x_1,x_2) = 45
+
     
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
@@ -26,9 +30,9 @@ def Schwefel(input):
     """
     Here, we will take the function : Schwefel f(input) = 418.9829*2 - input[0]*np.sin(abs(input[0])**0.5) - input[1]*np.sin(abs(input[1])**0.5)
     
+    x_1,x_2 in [-500, 500]
     
-    -    minx = -500
-    -    maxx = 500
+    SOLUTION : x_1 = x_2 = 420 with f*(x_1,x_2) = 0
     
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
@@ -59,8 +63,11 @@ def Rastrigin(input):
     """
     Here, we will take the function : Rastrigin(input) = 10*2 + (input[0]**2-10*np.cos(2*mt.pi*input[0])) + (input[1]**2-10*np.cos(2*mt.pi*input[1]))
 
-    -    minx = -5
-    -    maxx = 5
+    x_1,x_2 in [-5,5]
+    
+    SOLUTION : x_1 = x_2 = 0 with f*(x_1,x_2) = 0
+    
+
     
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
@@ -74,12 +81,13 @@ def Rastrigin(input):
 
 def Rosenbrock(input):
     """
-    Here, we will take the function : Rosenbrock(input) = 100*((input[1]-input[0]**2)**2) + (input[0]- 1)**2 
+    Here, we will take the function : Rosenbrock(input) = 100*((x_2-x_1**2)**2) + (x_1- 1)**2 
 
-    -     minx = -10
+    x_1,x_2 in [-10,10]
     
-    -     maxx = 10
+    SOLUTION : x_1 = x_2 = 1 with f*(x_1,x_2) = 0
     
+
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
         
@@ -95,6 +103,10 @@ def Easom(input):
     """
     Here, we will take the function : Easom(input) = -np.cos(input[0])*np.cos(input[1])*np.exp(-(input[0]-mt.pi)**2-(input[1]-mt.pi)**2)
 
+    x_1 , x_2 in [-100,100]
+    
+    SOLUTION : x_1 = x_2 = 3.1415 avec f*(x_1,x_2) = -1
+    
     Args:
         input (np.array): contains all the inputs of the function here we have 2 variables (shape of input 2x1)
         
