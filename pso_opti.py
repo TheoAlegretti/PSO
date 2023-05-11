@@ -7,7 +7,7 @@ import pandas as pd
 from functions_to_optimise import *
 import time
 from config_pso import config_pso
-
+import concurrent.futures
 
 def pso_dictionnaire(fct, params):
     begin = time.time()
@@ -149,25 +149,37 @@ def pso_dictionnaire(fct, params):
                 }
 
     
-    def iteration_loop(fct,params,store_dict) : 
+    def iteration_loop(fct,params) : 
+        store_dict = initialization_pos_vit(fct,params)
         for iteration in range(1, params["max_ite"]):
             store_dict = actualisation_vitesse(store_dict,params)
             store_dict = actualisation_position(store_dict,params)
         return store_dict 
     
     
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(iteration_loop, fct, params) for _ in range(params["nb_simulation_MC"])]
+
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            store_dict = future.result()
+            best_of_info["avg"][i] = np.mean(store_dict['best_personal_output']["output"])
+            best_of_info["opti_out"][i] = store_dict['best_bird']['output']
+            best_of_info["opti_in"][i] = store_dict['best_bird']['input']
+            best_of_info["var"][i] = np.var(store_dict['best_personal_output']["output"])
+            
+            # print(f"Simulation n° {i} done")
     # Algo chained : TO DO : Mettre des @numba boucle ou opti avec parallélisation
-    for simu in range(0, params["nb_simulation_MC"]):
-        store_pso = initialization_pos_vit(fct,params)
-        store_dict = iteration_loop(fct,params,store_pso)
-        best_of_info["avg"][simu] = np.mean(
-            store_dict['best_personal_output']["output"]
-        )
-        best_of_info["opti_out"][simu] = store_dict['best_bird']['output']
-        best_of_info["opti_in"][simu] = store_dict['best_bird']['input']
-        best_of_info['var'][simu] = np.var(
-            store_dict['best_personal_output']["output"]
-        )
+    # for simu in range(0, params["nb_simulation_MC"]):
+    #     store_dict = iteration_loop(fct,params)
+    #     best_of_info["avg"][simu] = np.mean(
+    #         store_dict['best_personal_output']["output"]
+    #     )
+    #     best_of_info["opti_out"][simu] = store_dict['best_bird']['output']
+    #     best_of_info["opti_in"][simu] = store_dict['best_bird']['input']
+    #     best_of_info['var'][simu] = np.var(
+    #         store_dict['best_personal_output']["output"]
+    #     )
         # print(f"Simulation n° {simu} done")
         
 

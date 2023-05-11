@@ -1,19 +1,20 @@
 from functions_to_optimise import * 
 
+
 def config_pso():
 
     params = {
-        "nb_part" : 2, 
+        "nb_part" : 50, 
         "vit" : 0.1, 
         "c1" : 0.2, 
         "c2" : 0.2,
-        "max_ite" : 500, 
-        "nb_simulation_MC" : 5 , 
-        "min_x" : -100, 
-        "max_x" : 100, 
+        "max_ite" : 5000, 
+        "nb_simulation_MC" : 50 , 
+        "min_x" : -10, 
+        "max_x" : 10, 
         "Dim" : 2, 
         "min_max" : "min", 
-        "function" : Easom,
+        "function" : Rosenbrock,
         }
     
     return params

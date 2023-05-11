@@ -7,6 +7,8 @@ import pandas as pd
 from functions_to_optimise import *
 import time
 from config_pso import config_pso
+from numba import jit
+import concurrent.futures
 
 
 def pso_opti(fct, params):
@@ -31,7 +33,7 @@ def pso_opti(fct, params):
     }
     
     
-    
+    # @jit(nopython=True)
     def actualisation_position(update_inputs,update_output,velocity,best_bird_input,best_bird_output,best_personal_inputs,best_personal_output,params) :
         """
         Actualise les positions des particules dans l'optimisation par essaim de particules (PSO).
@@ -73,7 +75,7 @@ def pso_opti(fct, params):
         
         return update_inputs,update_output,velocity,best_bird_input,best_bird_output,best_personal_inputs,best_personal_output
     
-    
+    # @jit(nopython=True)
     def actualisation_vitesse(iteration,update_inputs,velocity,best_bird_input,best_personal_inputs,params):
         """
         Actualise la vitesse des particules dans l'optimisation par essaim de particules (PSO).
@@ -126,7 +128,7 @@ def pso_opti(fct, params):
             print(
                 "please, define if you want to maximise or minimise your function on the params dict"
             )
-            
+      
     def initialization_pos_vit(fct,params):
         
         update_inputs = np.random.uniform(
@@ -147,7 +149,7 @@ def pso_opti(fct, params):
 
         return update_inputs,update_output,velocity,best_bird_input,best_bird_output,best_personal_inputs,best_personal_output
 
-    
+
     def iteration_loop(fct,
                        params,
                        ): 
@@ -160,18 +162,17 @@ def pso_opti(fct, params):
         return best_personal_output,best_bird_input,best_bird_output
     
     
-    # Algo chained : TO DO : Mettre des @numba boucle ou opti avec parallélisation
-    for simu in range(0, params["nb_simulation_MC"]):
-        best_personal_output,best_bird_input,best_bird_output = iteration_loop(fct,params)
-        best_of_info["avg"][simu] = np.mean(
-            best_personal_output
-        )
-        best_of_info["opti_out"][simu] = best_bird_output
-        best_of_info["opti_in"][simu] = best_bird_input
-        best_of_info['var'][simu] = np.var(
-            best_personal_output
-        )
-        # print(f"Simulation n° {simu} done")
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(iteration_loop, fct, params) for _ in range(params["nb_simulation_MC"])]
+
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            best_personal_output, best_bird_input, best_bird_output = future.result()
+            best_of_info["avg"][i] = np.mean(best_personal_output)
+            best_of_info["opti_out"][i] = best_bird_output
+            best_of_info["opti_in"][i] = best_bird_input
+            best_of_info["var"][i] = np.var(best_personal_output)
+            # print(f"Simulation n° {i} done")
         
 
     best_of_best_index = arg_min_max(best_of_info['opti_out'],params['min_max'])
