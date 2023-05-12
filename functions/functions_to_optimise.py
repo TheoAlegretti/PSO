@@ -94,7 +94,8 @@ def Rosenbrock(input):
     Returns:
         np.array : contains all the outputs of the function 
     """
-    return np.array(100*((input[1]-input[0]**2)**2) + (input[0]- 1)**2) 
+    
+    return np.array(100*((input[1]-input[0]**2)**2) + (input[0]- 1)**2)
 
 
 
