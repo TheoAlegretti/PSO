@@ -132,7 +132,7 @@ def run_simulation(birds,results,simu, params):
         ] = True
     return birds,results
 
-def store_display(results,birds,params,best_of_info,display):
+def store_display(results,birds,params,best_of_info,show_result):
     # On stock les résultats de l'algorithme ici :
     df_result = pd.DataFrame(results["simulation"]).T
     df_birds = pd.DataFrame(birds["simulation"]).T
@@ -161,7 +161,7 @@ def store_display(results,birds,params,best_of_info,display):
             ],
             2,
         )
-    if display : 
+    if show_result : 
         # quelques logs :
         print(
             f"La meilleure image obtenue est {np.round(best_of_info['opti'][result_ite],2)}"
@@ -207,7 +207,7 @@ def pso_json_v1(fct, params):
     for simu in range(0, params["nb_simulation_MC"]):
         birds,results = run_simulation(birds,results,simu, params)
         
-    df_result, best_of_info_df, df_birds  = store_display(results,birds,params,best_of_info,False)
+    df_result, best_of_info_df, df_birds  = store_display(results,birds,params,best_of_info,True)
 
     print(f"PSO run in {np.round(time.time() - begin,2)}' s")
     
@@ -272,7 +272,7 @@ def pso_json_v3(fct, params):
         results["simulation"][simu] = updated_results["simulation"][simu]
         
         
-    df_result, best_of_info_df, df_birds = store_display(results, birds, params, best_of_info, False)
+    df_result, best_of_info_df, df_birds = store_display(results, birds, params, best_of_info, True)
 
     print(f"PSO run in {np.round(time.time() - begin, 2)}' s")
     
