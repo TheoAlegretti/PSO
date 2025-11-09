@@ -35,7 +35,7 @@ L'application interactive permet de :
 pip install uv
 uv venv
 source .venv/bin/activate
-uv pip install -r dashboard/requirements.txt
+uv pip install -r dashbord/requirements.txt
 ```
 
 ### Démarrage
@@ -43,10 +43,41 @@ uv pip install -r dashboard/requirements.txt
 Pour lancer l'application, exécutez la commande suivante :
 
 ```bash
-python dashboard/app.py
+python dashbord/app.py
 ```
 
 Accédez ensuite à l'adresse indiquée (par exemple : `http://127.0.0.1:8050/`).
+
+### Lancer avec Docker (recommandé)
+
+Le service web Dash/Flask et la configuration Docker sont fournis dans le dossier `dashbord`.
+
+1) Construire l'image Docker (depuis la racine du projet) :
+
+```bash
+# contexte = dossier dashbord (contient Dockerfile et requirements.txt)
+docker build -t pso:latest ./dashbord
+```
+
+2) Lancer le conteneur (mappe le port 5002 du conteneur sur le port 5002 de la machine hôte) :
+
+```bash
+docker run -d --name pso_container -p 5002:5002 pso:latest
+```
+
+3) Vérifier le statut et les logs :
+
+```bash
+docker ps --filter "name=pso_container"
+docker logs --tail 200 pso_container
+# pour suivre les logs en temps réel
+docker logs -f pso_container
+```
+
+4) Accéder à l'application dans votre navigateur :
+
+http://localhost:5002
+
 
 ### Notebook d'exemples
 
