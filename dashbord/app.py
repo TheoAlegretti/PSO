@@ -10,6 +10,7 @@ import math as mt
 import random 
 import pandas as pd 
 from flask import Flask
+import threading
 
 server = Flask(__name__)
 # app = dash.Dash(__name__)
@@ -214,9 +215,29 @@ def pso(fct,parts,vit,c1,c2) :
     #J'ai tous mis dans un dictionnaire géant => + rapide en boucle pour l'interactibilité des graphiques 
 
  
-#TEST avec la première fonction : permet de donner un graphique initial au lancement de l'application 
+# Fournir des placeholders légers afin que l'application puisse s'importer rapidement
+# et lancer la simulation initiale en arrière-plan (non bloquant). Cela évite que
+# l'import du module bloque gunicorn au démarrage.
 
-pso('Simp',20,0.3,0.1,0.5)
+# placeholders minimes pour éviter les NameError dans les callbacks
+Xite = {0: [[0.0], [0.0]]}
+Yite = {0: [0.0]}
+Vite = {0: [[0.0], [0.0]]}
+df = {'Xite': Xite, 'Yite': Yite, 'allgb': {0: 0.0}, 'allgbp': {0: 0}}
+allgb = {0: 0.0}
+allgbp = {0: 0}
+
+def _run_initial_pso():
+    """Lance une simulation PSO initiale en thread daemon pour remplir
+    progressivement les variables globales utilisées par l'UI.
+    """
+    try:
+        pso('Simp', 20, 0.3, 0.1, 0.5)
+    except Exception as e:
+        print("Initial PSO failed:", e)
+
+# démarrer en arrière-plan (daemon -> s'arrête quand le process principal s'arrête)
+threading.Thread(target=_run_initial_pso, daemon=True).start()
 
 # Résultats théoriques des différentes fonctions 
 fctsol = {'Simp':'solution analytique donne x = y = 0 avec z = 2'
